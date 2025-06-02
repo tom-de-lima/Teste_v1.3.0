@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Remuneração Servidor</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/style2.css" />
 </head>
 <body>
   <main class="container">
@@ -99,14 +99,14 @@
         <input type="text" id="outrosDescontos" name="outrosDescontos" placeholder="0,00" />
       </div>
 
+      <!-- Férias -->
       <div class="field">
         <label for="ferias">Vai tirar férias?</label>
-        <select id="ferias" name="ferias" required>
-          <option value="nao">Não</option>
-          <option value="sim">Sim</option>
+        <select id="ferias" name="ferias">
+          <option value="0" selected>Não</option>
+          <option value="1">Sim</option>
         </select>
       </div>
-      
 
       <button type="submit">Calcular</button>
     </form>
@@ -136,3 +136,4 @@
   <script src="app.js" defer></script>
 </body>
 </html>
+
