@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remuneração Servidor</title>
+  <link rel="stylesheet" href="/style2.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>🤖GranaCheck💸 - Seu Personal RH</h1>
+    <h2>Descubra antes de levar um banho!😥</h2>
+
+    <form id="remuneracao-form">
+      <div class="field">
+        <label for="baseAtual">Salário Base Atual (R$)</label>
+        <select id="baseAtual" name="baseAtual" required>
+          <option value="2.083,54">2.083,54</option>
+          <option value="2.003,40">2.003,40</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="plantoes">Quantidade de Plantões</label>
+        <select id="plantoes" name="plantoes" required>
+          <option value="7">7 plantões</option>
+          <option value="8">8 plantões</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="escolaridade">Escolaridade</label>
+        <select id="escolaridade" name="escolaridade" required>
+          <option value="1">Sem ensino superior</option>
+          <option value="2">Graduação</option>
+          <option value="3">Pós-graduação</option>
+          <option value="4">Mestrado/Doutorado</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="quinquenio">Quantidade de Quinquênios</label>
+        <input type="number" id="quinquenio" name="quinquenio" min="0" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="especializacao">Serviço Especializado</label>
+        <select id="especializacao" name="especializacao">
+          <option value="0">Nenhum</option>
+          <option value="15">15%</option>
+          <option value="25">25%</option>
+        </select>
+      </div>
+
+      <!-- Serviços extras -->
+      <div class="field">
+        <label for="extra24">Serviço Extra 24h (cotas)</label>
+        <input type="number" id="extra24" name="extra24" min="0" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="extra10diurno">Serviço Extra 10h Diurno (cotas)</label>
+        <input type="number" id="extra10diurno" name="extra10diurno" min="0" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="extra10noturno">Serviço Extra 10h Noturno (cotas)</label>
+        <input type="number" id="extra10noturno" name="extra10noturno" min="0" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="extraFestivo">Serviço Extra Festivo (cotas)</label>
+        <input type="number" id="extraFestivo" name="extraFestivo" min="0" value="0" />
+      </div>
+
+      <div class="field">
+        <label for="valorExtraFestivo">Valor Extra Festivo (R$)</label>
+        <input type="text" id="valorExtraFestivo" name="valorExtraFestivo" placeholder="0,00" />
+      </div>
+
+      <!-- Dependentes IR -->
+      <div class="field">
+        <label for="dependentes">Dependentes (IR)</label>
+        <input type="number" id="dependentes" name="dependentes" min="0" value="0" />
+      </div>
+
+      <!-- Sindicato -->
+      <div class="field">
+        <label for="sindicalizado">Sindicalizado?</label>
+        <select id="sindicalizado" name="sindicalizado">
+          <option value="0">Não</option>
+          <option value="1">Sim</option>
+        </select>
+      </div>
+
+      <!-- Descontos individuais -->
+      <div class="field">
+        <label for="outrosDescontos">Descontos Individuais (R$)</label>
+        <input type="text" id="outrosDescontos" name="outrosDescontos" placeholder="0,00" />
+      </div>
+
+      <div class="field">
+        <label for="ferias">Vai tirar férias?</label>
+        <select id="ferias" name="ferias" required>
+          <option value="nao">Não</option>
+          <option value="sim">Sim</option>
+        </select>
+      </div>
+      
+
+      <button type="submit">Calcular</button>
+    </form>
+    
+    <!-- == Cabeçalho de impressão (só aparece no print) == -->
+   <div id="print-header" class="print-only">
+         <p id="text_report">Relatório com gratificações, descontos e totais calculados pelo GranaCheck.</p>
+         <p id="print-date"></p>
+       </div>
+
+    <section id="resultados">
+      <!-- Os resultados serão inseridos aqui dinamicamente pelo app.js -->
+    </section>
+        <!-- NOVO: controle de impressão -->
+        <div class="print-control">
+            <button type="button" id="print-btn">Imprimir</button>
+          </div>      
+  </main>
+
+  <footer class="footer">
+    <p><u><b>Lima Neto</b></u> - Engenheiro de software responsável pela elaboração aplicativo. Supervisão e execução da codificação, lógica e interface</p>
+    <p><u><b>Saulo do TDAH</b></u> - Responsável pela disponibilização e revisão de fórmulas matemáticas</p>
+    <p><u><b>Satya</b></u> - Analista e Desenvolvedora de Sistemas. Responsável pela execução, revisão e debug do código</p>
+    <p>Contato: <a href="mailto:antoniojosedelimaneto@gmail.com">antoniojosedelimaneto@gmail.com</a></p>
+  </footer>
+
+  <script src="app2.js" defer></script>
+</body>
+</html>
