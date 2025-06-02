@@ -1,0 +1,326 @@
+/* Reset básico e variáveis de tema */
+:root {
+    --cor-fundo: #fff;
+    --cor-entrada-bg: #2c3e50;       /* azul noturno */
+    --cor-button-bg: #2c3e50;
+    --cor-button-hover: #34495e;
+    --cor-secundaria: #555;
+    --cor-accent: #007bff;
+    --cor-total-liquido-bg: #d4edda; /* verde claro */
+    --cor-total-descontos-bg: #f8d7da;/* vermelho claro */
+    --espacamento: 1rem;
+    --border-radius: 0.5rem;
+    --transicao: 0.3s;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-secundaria);
+    line-height: 1.5;
+    padding: var(--espacamento);
+  }
+  
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    padding: calc(var(--espacamento) * 1.5);
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: calc(var(--espacamento) * 1.5);
+    text-align: center;
+    background-color: var(--cor-entrada-bg);
+    color: #fff;
+    padding: var(--espacamento);
+    border-radius: var(--border-radius);
+  }
+  
+   h2 {
+      text-align: center;
+      font-style: italic;
+      color:#721c24
+    }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    padding: var(--espacamento);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--espacamento);
+    border: 1px solid #ccc;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--espacamento);
+  }
+  
+  .field label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  .field input,
+  .field select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    transition: border-color var(--transicao);
+  }
+  
+  .field input:focus,
+  .field select:focus {
+    outline: none;
+    border-color: var(--cor-accent);
+  }
+  
+  button[type="submit"] {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    background-color: var(--cor-button-bg);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transicao);
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: var(--cor-button-hover);
+  }
+  
+  #resultados .item {
+    padding: var(--espacamento) 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    border-radius: var(--border-radius);
+  }
+  
+  #resultados .item.highlight-base {
+    background-color: #eaf3fc; /* leve azul para Base Atual */
+    font-weight: bold;
+  }
+  
+  #resultados .item.total-liquido {
+    background-color: var(--cor-total-liquido-bg);
+    color: #155724;
+    font-weight: bold;
+  }
+  
+  #resultados .item.total-descontos {
+    background-color: var(--cor-total-descontos-bg);
+    color: #721c24;
+    font-weight: bold;
+  }
+  
+  .footer {
+    background-color: var(--cor-entrada-bg);    /* Azul noturno */
+    color: #ecf0f1;                              /* Texto claro */
+    padding: calc(var(--espacamento) * 1.5);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 0.85rem;
+    text-align: center;
+    box-shadow: 12px -12px 12px rgba(0,0,0,0.1);
+    margin-top: var(--espacamento);
+  }
+  
+  .footer p {
+    margin: 0.2rem 0;
+    opacity: 0.9;
+  }
+  
+  .footer a {
+    color: var(--cor-accent);    /* Mesma cor de destaque dos links */
+    font-weight: bold;
+    text-decoration: none;
+    transition: color var(--transicao);
+  }
+  
+  .footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .landing .itensV {
+    color: #F1601F;
+    line-height: 0.4;
+    text-align: justify;
+  }
+
+  .landing #titleH3 {
+    margin: 16px;
+    text-align: justify;
+  }
+  
+  
+  /* Responsividade */
+  @media (max-width: 360px) {
+    .container {
+      padding: var(--espacamento);
+    }
+  
+    h1 {
+      font-size: 1.5rem;
+    }
+  
+    button[type="submit"] {
+      font-size: 1rem;
+    }
+  }
+  
+  /* === Landing Page Styles === */
+  body.landing {
+    background-color: var(--cor-entrada-bg);
+    color: #ecf0f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  
+  .landing-container {
+    max-width: 600px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: calc(var(--espacamento) * 2);
+    border-radius: var(--border-radius);
+    text-align: center;
+  }
+  
+  .landing-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--espacamento);
+  }
+  
+  .landing-container p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: var(--espacamento);
+    text-align: justify;
+  }
+  
+  .btn-landing {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    background-color: var(--cor-button-bg);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: background var(--transicao);
+  }
+  
+  .btn-landing:hover {
+    background-color: var(--cor-button-hover);
+  }
+  
+  .landing-container .aviso p {
+    font-size: 0.6em;
+    color: #555; 
+    line-height: 1.6; 
+    margin-top: 20px;
+  }
+  
+  .landing-container img {
+    height: 300px;
+    width: 300;
+  }
+
+  #text_report {
+    text-align: justify;
+  }
+  
+
+/* ============================= */
+/* 1) Esconder controles na tela */
+/* ============================= */
+.print-control {
+    display: none;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+  
+  /* ============================= */
+  /* 2) Cabeçalho só aparece no print */
+  /* ============================= */
+  .print-only {
+    display: none !important;
+  }
+  
+  /* ============================= */
+  /* 3) Estilos de impressão       */
+  /* ============================= */
+  @media print {
+    /* 3.1) Oculta header, form, botão de print e rodapé */
+    header,
+    form,
+    .print-control,
+    footer {
+      display: none !important;
+    }
+  
+    /* 3.2) Remove decoração do container para impressão */
+    .container {
+      background: transparent !important;
+      border: none       !important;
+      box-shadow: none   !important;
+    }
+  
+    /* 3.3) Exibe somente o cabeçalho de print e os resultados */
+    #print-header,
+    #resultados {
+      display: block !important;
+      position: static !important;
+    }
+  
+    /* 3.4) Espaçamento antes dos resultados */
+    #print-header {
+      margin-bottom: 1rem;
+    }
+  
+    /* 3.5) Estilo “contracheque” para cada linha */
+    #resultados .item {
+      display: flex             !important;
+      justify-content: space-between !important;
+      border: 1px solid #000    !important;
+      padding: 0.5rem           !important;
+      margin-bottom: 0.25rem    !important;
+      font-size: 0.9rem         !important;
+      color: #000               !important;
+      background: none          !important;
+    }
+  
+    /* 3.6) Destaque Total Líquido */
+    #resultados .item.total-liquido {
+      background-color: #d4edda !important; /* leve esverdeado */
+      color: #000         !important;       /* texto preto */
+      font-weight: bold   !important;
+    }
+  
+    /* 3.7) Destaque Total Descontos */
+    #resultados .item.total-descontos {
+      background-color: #f8d7da !important; /* leve avermelhado */
+      color: #000         !important;       /* texto preto */
+      font-weight: bold   !important;
+    }
+  }
+
