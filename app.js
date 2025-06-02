@@ -4,26 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("remuneracao-form")
   const resultados = document.getElementById("resultados")
 
-  // Elementos de input que precisam de máscara de moeda
   const inputBaseAtual = document.getElementById("baseAtual")
   const inputValorExtraFestivo = document.getElementById("valorExtraFestivo")
   const inputOutrosDescontos = document.getElementById("outrosDescontos")
 
-  // Formatter para moeda BRL
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
     minimumFractionDigits: 2,
   })
 
-  // Função genérica para aplicar máscara de moeda
-  function aplicarMascaraMoeda(e) {
-    const value = e.target.value.replace(/\D/g, "")
-    const numeric = Number(value) / 100
-    e.target.value = formatter.format(numeric)
-  }
-
-  // Adiciona listener de input para cada campo que precisa de máscara
   ;[inputValorExtraFestivo, inputOutrosDescontos].forEach((input) => {
     input.addEventListener("input", (e) => {
       const v = e.target.value.replace(/\D/g, "")
@@ -43,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    // Entradas originais
     const baseAtual = parseBRL(inputBaseAtual.value)
     const plantoes = parseInt(document.getElementById("plantoes").value, 10)
     const escolaridade = parseInt(
@@ -70,9 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const outrosDescontos = parseBRL(
       document.getElementById("outrosDescontos").value || "0"
     )
-    const ferias = document.getElementById("ferias").value
+    const ferias = document.getElementById("ferias").value === "1"
 
-    // Cálculos
     const riscoVida = baseAtual * 0.5
     let adNoturno = (baseAtual / 160 / 5) * (plantoes === 8 ? 88 : 77)
     const horasExcedentes50 =
@@ -80,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const horasExcedentes70 =
       (baseAtual / 160 + (baseAtual / 160) * 0.7) * (plantoes === 8 ? 15 : 4)
 
-    // Auxílio Alimentação
     let auxAlimenta = baseInicial * 0.02 * (plantoes === 8 ? 24 : 21)
     const valorAuxAlimentacao24 =
       extra24 > 0 ? baseInicial * 0.02 * 3 * extra24 : 0
@@ -93,29 +80,46 @@ document.addEventListener("DOMContentLoaded", () => {
       valorAuxAlimentacao10diurno +
       valorAuxAlimentacao10noturno
 
-    // Valores extras
     const valorExtra24 = 370.0 * extra24
     const valorExtra10diurno = 141.48 * extra10diurno
     const valorExtra10noturno = 163.25 * extra10noturno
 
-    // Adicional noturno em extras
     const valorAdnoturnoExtra24 =
       extra24 > 0 ? (baseAtual / 160 / 5) * 11 * extra24 : 0
     const valorAdnoturnoExtra10 =
       extra10noturno > 0 ? (baseAtual / 160 / 5) * 8 * extra10noturno : 0
     adNoturno += valorAdnoturnoExtra24 + valorAdnoturnoExtra10
 
-    // Extras festivos
     const totalExtraFestivo = valorExtraFestivo * extraFestivo
 
-    // Escolaridade e quinquênio
     let valorEscolaridade = 0
     if (escolaridade === 2) valorEscolaridade = baseAtual * 0.1
     if (escolaridade === 3) valorEscolaridade = baseAtual * 0.2
     if (escolaridade === 4) valorEscolaridade = baseAtual * 0.3
     const valorQuinquenio = baseAtual * 0.05 * quinquenio
 
-    // Monta os itens até antes das férias e especialização
+    const extraEspecializacao24 = valorExtra24 * (especializacao / 100)
+    const extraEspecializacao10diurno =
+      valorExtra10diurno * (especializacao / 100)
+    const extraEspecializacao10noturno =
+      valorExtra10noturno * (especializacao / 100)
+
+    let valorEspecializacao = 0
+    if (especializacao === 15 || especializacao === 25) {
+      valorEspecializacao =
+        baseInicial * (especializacao / 100) +
+        (baseInicial / 160 +
+          (especializacao === 15
+            ? (baseInicial / 160) * 0.5
+            : (baseInicial / 160) * 0.7)) *
+          (especializacao === 15 ? 17 : 15) *
+          (especializacao / 100)
+      valorEspecializacao +=
+        extraEspecializacao24 +
+        extraEspecializacao10diurno +
+        extraEspecializacao10noturno
+    }
+
     const itens = [
       { label: "Base Atual", value: baseAtual },
       { label: "Risco de Vida", value: riscoVida },
@@ -129,53 +133,26 @@ document.addEventListener("DOMContentLoaded", () => {
       { label: "Extras Festivos (total)", value: totalExtraFestivo },
       { label: "Escolaridade", value: valorEscolaridade },
       { label: "Quinquênio", value: valorQuinquenio },
+      { label: "Especialização", value: valorEspecializacao },
     ]
 
-    const totalBruto = itens.reduce((sum, item) => sum + item.value, 0)
-
-    // Férias
+    let totalBruto = itens.reduce((sum, item) => sum + item.value, 0)
     let valorFerias = 0
-    if (ferias === "sim") {
+
+    if (ferias) {
       valorFerias = totalBruto * 0.333334
+      if (!isNaN(valorFerias)) {
+        itens.push({ label: "Férias (1/3 sobre o bruto)", value: valorFerias })
+        totalBruto += valorFerias
+      }
     }
 
-    // Total antes da especialização (com férias)
-    const totalAntesEsp = [
-      baseAtual,
-      riscoVida,
-      adNoturno,
-      horasExcedentes50,
-      horasExcedentes70,
-      auxAlimenta,
-      valorExtra24,
-      valorExtra10diurno,
-      valorExtra10noturno,
-      valorEscolaridade,
-      valorQuinquenio,
-      valorFerias,
-    ].reduce((sum, v) => sum + v, 0)
-
-    // Especialização
-    let valorEspecializacaoOrig = 0
-    if (especializacao === 15) valorEspecializacaoOrig = totalAntesEsp * 0.15
-    if (especializacao === 25) valorEspecializacaoOrig = totalAntesEsp * 0.25
-    const valorEspecializacao = valorEspecializacaoOrig
-
-    // Adiciona os dois itens finais
-    itens.push({ label: "Especialização", value: valorEspecializacao })
-    if (valorFerias > 0) {
-      itens.push({ label: "1/3 de férias", value: valorFerias })
-    }
-
-    const totalBrutoFinal = itens.reduce((sum, item) => sum + item.value, 0)
-
-    // Descontos
     const previdencia = (baseAtual + valorQuinquenio) * 0.14
     const sindicato = sindicalizado ? baseAtual * 0.02 : 0
     const valorDependentes = 189.59 * dependentes
 
     const baseCalculoIR =
-      totalBrutoFinal -
+      totalBruto -
       (previdencia + auxAlimenta + valorEspecializacao + valorDependentes)
     let descontoIR = 0
     if (baseCalculoIR <= 2259.2) descontoIR = 0
@@ -188,18 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
     else descontoIR = baseCalculoIR * 0.275 - 896.0
 
     const totalLiquido =
-      totalBrutoFinal - (previdencia + descontoIR + sindicato + outrosDescontos)
+      totalBruto - (previdencia + descontoIR + sindicato + outrosDescontos)
 
-    // Exibe os resultados
     resultados.innerHTML = ""
     itens.forEach((item) => {
       const linha = document.createElement("div")
       linha.classList.add("item")
       if (item.label === "Base Atual") linha.classList.add("highlight-base")
-      linha.innerHTML = `
-        <span>${item.label}</span>
-        <span>${formatter.format(item.value)}</span>
-      `
+      linha.innerHTML = `<span>${item.label}</span><span>${formatter.format(
+        item.value
+      )}</span>`
       resultados.appendChild(linha)
     })
 
@@ -207,18 +182,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const linhaBruta = document.createElement("div")
     linhaBruta.classList.add("item")
-    linhaBruta.innerHTML = `
-      <strong>Total Bruto</strong>
-      <strong>${formatter.format(totalBrutoFinal)}</strong>
-    `
+    linhaBruta.innerHTML = `<strong>Total Bruto</strong><strong>${formatter.format(
+      totalBruto
+    )}</strong>`
     resultados.appendChild(linhaBruta)
 
     const linhaLiquida = document.createElement("div")
     linhaLiquida.classList.add("item", "total-liquido")
-    linhaLiquida.innerHTML = `
-      <strong>Total Líquido</strong>
-      <strong>${formatter.format(totalLiquido)}</strong>
-    `
+    linhaLiquida.innerHTML = `<strong>Total Líquido</strong><strong>${formatter.format(
+      totalLiquido
+    )}</strong>`
     resultados.appendChild(linhaLiquida)
 
     const descontos = [
@@ -227,39 +200,36 @@ document.addEventListener("DOMContentLoaded", () => {
       { label: "Imposto de Renda", value: descontoIR },
       { label: "Descontos Individuais", value: outrosDescontos },
     ]
+
     descontos.forEach((d) => {
       const div = document.createElement("div")
       div.classList.add("item")
-      div.innerHTML = `
-        <span>${d.label}</span>
-        <span>${formatter.format(d.value)}</span>
-      `
+      div.innerHTML = `<span>${d.label}</span><span>${formatter.format(
+        d.value
+      )}</span>`
       resultados.appendChild(div)
     })
 
     const totalDescontos = descontos.reduce((sum, d) => sum + d.value, 0)
     const linhaDescontos = document.createElement("div")
     linhaDescontos.classList.add("item", "total-descontos")
-    linhaDescontos.innerHTML = `
-      <strong>Total Descontos</strong>
-      <strong>${formatter.format(totalDescontos)}</strong>
-    `
+    linhaDescontos.innerHTML = `<strong>Total Descontos</strong><strong>${formatter.format(
+      totalDescontos
+    )}</strong>`
     resultados.appendChild(linhaDescontos)
   })
-  
-   // === Bloco de impressão (com data/hora) ===
- const printBtn = document.getElementById('print-btn');
- printBtn.addEventListener('click', () => {
-   if (confirm('Deseja imprimir o relatório de remuneração?')) {
-     // preenche data e hora
-     const now  = new Date();
-     const date = now.toLocaleDateString('pt-BR');
-     const time = now.toLocaleTimeString('pt-BR');
-     document.getElementById('print-date').textContent =
-       `Data de Impressão: ${date} ${time}`;
 
-     window.print();
-   }
- });
-  // === Fim do bloco de impressão ===
+  const printBtn = document.getElementById("print-btn")
+  printBtn.addEventListener("click", () => {
+    if (confirm("Deseja imprimir o relatório de remuneração?")) {
+      const now = new Date()
+      const date = now.toLocaleDateString("pt-BR")
+      const time = now.toLocaleTimeString("pt-BR")
+      document.getElementById(
+        "print-date"
+      ).textContent = `Data de Impressão: ${date} ${time}`
+      window.print()
+    }
+  })
 })
+
