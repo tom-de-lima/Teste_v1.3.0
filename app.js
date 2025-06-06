@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    const baseAtual = parseBRL(inputBaseAtual.value)
+    let baseAtual = parseBRL(inputBaseAtual.value)
     const plantoes = parseInt(document.getElementById("plantoes").value, 10)
     const escolaridade = parseInt(
       document.getElementById("escolaridade").value,
@@ -60,6 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("outrosDescontos").value || "0"
     )
     const ferias = document.getElementById("ferias").value === "1"
+
+    if (escolaridade === 2) baseAtual += baseAtual * 0.1
+    if (escolaridade === 3) baseAtual += baseAtual * 0.2
+    if (escolaridade === 4) baseAtual += baseAtual * 0.3
 
     const riscoVida = baseAtual * 0.5
     let adNoturno = (baseAtual / 160 / 5) * (plantoes === 8 ? 88 : 77)
@@ -92,35 +96,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const totalExtraFestivo = valorExtraFestivo * extraFestivo
 
-    let valorEscolaridade = 0
-    if (escolaridade === 2) valorEscolaridade = baseAtual * 0.1
-    if (escolaridade === 3) valorEscolaridade = baseAtual * 0.2
-    if (escolaridade === 4) valorEscolaridade = baseAtual * 0.3
     const valorQuinquenio = baseAtual * 0.05 * quinquenio
 
-    const extraEspecializacao24 = valorExtra24 * (especializacao / 100)
-    const extraEspecializacao10diurno =
-      valorExtra10diurno * (especializacao / 100)
-    const extraEspecializacao10noturno =
-      valorExtra10noturno * (especializacao / 100)
+ // Calcular base para especializacao
+ const totalAntesEsp = [
+  baseAtual,
+  riscoVida,
+  adNoturno,
+  horasExcedentes50,
+  horasExcedentes70,
+  auxAlimenta,
+  valorExtra24,
+  valorExtra10diurno,
+  valorExtra10noturno,
+  valorQuinquenio,
+].reduce((sum, v) => sum + v, 0)
 
-    let valorEspecializacao = 0
-    if (especializacao === 15 || especializacao === 25) {
-      valorEspecializacao =
-        baseInicial * (especializacao / 100) +
-        (baseInicial / 160 +
-          (especializacao === 15
-            ? (baseInicial / 160) * 0.5
-            : (baseInicial / 160) * 0.7)) *
-          (especializacao === 15 ? 17 : 15) *
-          (especializacao / 100)
-      valorEspecializacao +=
-        extraEspecializacao24 +
-        extraEspecializacao10diurno +
-        extraEspecializacao10noturno
-    }
+// Calcular valorEspecializacao com nova fórmula mantendo nome
+// Primeiro, calcular valorEspecializacaoOrig para subtrair
+let valorEspecializacaoOrig = 0
+if (especializacao === 15) {
+  valorEspecializacaoOrig = totalAntesEsp * 0.15
+}
+if (especializacao === 25) {
+  valorEspecializacaoOrig = totalAntesEsp * 0.25
+}
 
-    const itens = [
+const valorEspecializacao = valorEspecializacaoOrig    
+
+
+const itens = [
       { label: "Base Atual", value: baseAtual },
       { label: "Risco de Vida", value: riscoVida },
       { label: "Adicional Noturno", value: adNoturno },
@@ -131,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
       { label: "Serviço Extra 10h Diurno", value: valorExtra10diurno },
       { label: "Serviço Extra 10h Noturno", value: valorExtra10noturno },
       { label: "Extras Festivos (total)", value: totalExtraFestivo },
-      { label: "Escolaridade", value: valorEscolaridade },
       { label: "Quinquênio", value: valorQuinquenio },
       { label: "Especialização", value: valorEspecializacao },
     ]
@@ -232,4 +236,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 })
-
