@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
       brl
         .replace(/\./g, "")
         .replace(/,/g, ".")
-        .replace(/[^0-9\.]/g, "")
+        .replace(/[^0-9.]/g, "")
     )
   }
 
@@ -61,24 +61,36 @@ document.addEventListener("DOMContentLoaded", () => {
     )
     const ferias = document.getElementById("ferias").value === "1"
 
-    if (escolaridade === 2) baseAtual += baseAtual * 0.1
-    if (escolaridade === 3) baseAtual += baseAtual * 0.2
-    if (escolaridade === 4) baseAtual += baseAtual * 0.3
+    // Definir fator de adicional noturno e acréscimo na base
+    let acrescimo = 0
+    let fatorAdNoturno = 1
 
+    if (escolaridade === 2) {
+      acrescimo = 0.1
+      fatorAdNoturno = 2.86
+    } else if (escolaridade === 3) {
+      acrescimo = 0.2
+      fatorAdNoturno = 3.13
+    } else if (escolaridade === 4) {
+      acrescimo = 0.3
+      fatorAdNoturno = 3.91
+    }
+
+    baseAtual += baseAtual * acrescimo
+
+    // Cálculos principais
     const riscoVida = baseAtual * 0.5
-    let adNoturno = (baseAtual / 160 / 5) * (plantoes === 8 ? 88 : 77)
+    let adNoturno =
+      fatorAdNoturno * (plantoes === 8 ? 88 : 77)
     const horasExcedentes50 =
-      (baseAtual / 160 + (baseAtual / 160) * 0.5) * (plantoes === 8 ? 17 : 4)
+      (baseAtual / 160 * 1.5) * (plantoes === 8 ? 17 : 4)
     const horasExcedentes70 =
-      (baseAtual / 160 + (baseAtual / 160) * 0.7) * (plantoes === 8 ? 15 : 4)
+      (baseAtual / 160 * 1.7) * (plantoes === 8 ? 15 : 4)
 
     let auxAlimenta = baseInicial * 0.02 * (plantoes === 8 ? 24 : 21)
-    const valorAuxAlimentacao24 =
-      extra24 > 0 ? baseInicial * 0.02 * 3 * extra24 : 0
-    const valorAuxAlimentacao10diurno =
-      extra10diurno > 0 ? baseInicial * 0.02 * 1 * extra10diurno : 0
-    const valorAuxAlimentacao10noturno =
-      extra10noturno > 0 ? baseInicial * 0.02 * 1 * extra10noturno : 0
+    const valorAuxAlimentacao24 = baseInicial * 0.02 * 3 * extra24
+    const valorAuxAlimentacao10diurno = baseInicial * 0.02 * 1 * extra10diurno
+    const valorAuxAlimentacao10noturno = baseInicial * 0.02 * 1 * extra10noturno
     auxAlimenta +=
       valorAuxAlimentacao24 +
       valorAuxAlimentacao10diurno +
@@ -89,43 +101,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const valorExtra10noturno = 163.25 * extra10noturno
 
     const valorAdnoturnoExtra24 =
-      extra24 > 0 ? (baseAtual / 160 / 5) * 11 * extra24 : 0
+      fatorAdNoturno * 11 * extra24
     const valorAdnoturnoExtra10 =
-      extra10noturno > 0 ? (baseAtual / 160 / 5) * 8 * extra10noturno : 0
+      fatorAdNoturno * 8 * extra10noturno
     adNoturno += valorAdnoturnoExtra24 + valorAdnoturnoExtra10
 
     const totalExtraFestivo = valorExtraFestivo * extraFestivo
-
     const valorQuinquenio = baseAtual * 0.05 * quinquenio
 
- // Calcular base para especializacao
- const totalAntesEsp = [
-  baseAtual,
-  riscoVida,
-  adNoturno,
-  horasExcedentes50,
-  horasExcedentes70,
-  auxAlimenta,
-  valorExtra24,
-  valorExtra10diurno,
-  valorExtra10noturno,
-  valorQuinquenio,
-].reduce((sum, v) => sum + v, 0)
+    const totalAntesEsp = [
+      baseAtual,
+      riscoVida,
+      adNoturno,
+      horasExcedentes50,
+      horasExcedentes70,
+      auxAlimenta,
+      valorExtra24,
+      valorExtra10diurno,
+      valorExtra10noturno,
+      valorQuinquenio,
+    ].reduce((sum, v) => sum + v, 0)
 
-// Calcular valorEspecializacao com nova fórmula mantendo nome
-// Primeiro, calcular valorEspecializacaoOrig para subtrair
-let valorEspecializacaoOrig = 0
-if (especializacao === 15) {
-  valorEspecializacaoOrig = totalAntesEsp * 0.15
-}
-if (especializacao === 25) {
-  valorEspecializacaoOrig = totalAntesEsp * 0.25
-}
+    let valorEspecializacao = 0
+    if (especializacao === 15) valorEspecializacao = totalAntesEsp * 0.15
+    if (especializacao === 25) valorEspecializacao = totalAntesEsp * 0.25
 
-const valorEspecializacao = valorEspecializacaoOrig    
-
-
-const itens = [
+    const itens = [
       { label: "Base Atual", value: baseAtual },
       { label: "Risco de Vida", value: riscoVida },
       { label: "Adicional Noturno", value: adNoturno },
@@ -141,14 +142,12 @@ const itens = [
     ]
 
     let totalBruto = itens.reduce((sum, item) => sum + item.value, 0)
-    let valorFerias = 0
 
+    let valorFerias = 0
     if (ferias) {
       valorFerias = totalBruto * 0.333334
-      if (!isNaN(valorFerias)) {
-        itens.push({ label: "Férias (1/3 sobre o bruto)", value: valorFerias })
-        totalBruto += valorFerias
-      }
+      itens.push({ label: "Férias (1/3 sobre o bruto)", value: valorFerias })
+      totalBruto += valorFerias
     }
 
     const previdencia = (baseAtual + valorQuinquenio) * 0.14
@@ -171,6 +170,7 @@ const itens = [
     const totalLiquido =
       totalBruto - (previdencia + descontoIR + sindicato + outrosDescontos)
 
+    // Exibir resultados
     resultados.innerHTML = ""
     itens.forEach((item) => {
       const linha = document.createElement("div")
@@ -223,6 +223,7 @@ const itens = [
     resultados.appendChild(linhaDescontos)
   })
 
+  // Botão de impressão
   const printBtn = document.getElementById("print-btn")
   printBtn.addEventListener("click", () => {
     if (confirm("Deseja imprimir o relatório de remuneração?")) {
