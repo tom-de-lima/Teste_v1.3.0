@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const valorAdnoturnoExtra24 =
       fatorAdNoturno * 11 * extra24
     const valorAdnoturnoExtra10 =
-      fatorAdNoturno * 8 * extra10noturno
+      fatorAdNoturno * 1 * extra10noturno
     adNoturno += valorAdnoturnoExtra24 + valorAdnoturnoExtra10
 
     const totalExtraFestivo = valorExtraFestivo * extraFestivo
