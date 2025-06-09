@@ -65,7 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let acrescimo = 0
     let fatorAdNoturno = 1
 
-    if (escolaridade === 2) {
+    if (escolaridade === 1){
+      acrescimo = 1
+      fatorAdNoturno = 2.60
+    }
+    else if (escolaridade === 2) {
       acrescimo = 0.1
       fatorAdNoturno = 2.86
     } else if (escolaridade === 3) {
